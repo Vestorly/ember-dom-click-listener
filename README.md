@@ -6,7 +6,7 @@ The primary use case is to trigger a click action that fires when a click occurs
 
 ## Installation
 
-* `ember install ember-ic-you`
+* `ember install ember-dom-click-listener`
 
 ## Usage
 
