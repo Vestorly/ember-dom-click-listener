@@ -2,7 +2,7 @@ import Ember$ from 'jquery';
 import Component from 'ember-component';
 import computed from 'ember-computed';
 import run from 'ember-runloop';
-import { isEmpty, isPresent } from 'ember-utils';
+import { isBlank, isEmpty, isPresent } from 'ember-utils';
 import { guidFor } from 'ember-metal/utils';
 
 /**
@@ -13,13 +13,15 @@ import { guidFor } from 'ember-metal/utils';
 const getDomElement = function(selector) {
   let idSelector, classSelector;
 
+  if (isBlank(selector)) { return; }
+
   if (selector.indexOf('#') === 0 || selector.indexOf('.') === 0) {
     return Ember$(`${selector}`);
   } else {
     idSelector = Ember$(`#${selector}`);
     classSelector = Ember$(`.${selector}`);
   }
-  return isPresent(idSelector) ? idSelector : classSelector;
+  return !isEmpty(idSelector) ? idSelector : classSelector;
 };
 
 /**

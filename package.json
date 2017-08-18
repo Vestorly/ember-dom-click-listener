@@ -1,7 +1,7 @@
 {
   "name": "ember-dom-click-listener",
   "version": "0.0.3",
-  "description": "A simple click listener that for Ember applications",
+  "description": "A simple click listener thats for Ember applications",
   "keywords": [
     "ember-addon"
   ],
