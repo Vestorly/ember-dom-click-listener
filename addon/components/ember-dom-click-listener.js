@@ -1,9 +1,15 @@
+import Ember from 'ember';
 import Ember$ from 'jquery';
 import Component from 'ember-component';
 import computed from 'ember-computed';
 import run from 'ember-runloop';
 import { isBlank, isEmpty, isPresent } from 'ember-utils';
 import { guidFor } from 'ember-metal/utils';
+
+const { Logger } = Ember;
+
+const noParentErrorMssage = 'A `parentSelector` is required to check if a click occurred outside the parent. ' +
+                            'Examples: `.my-selector` or `my-selector`';
 
 /**
   Checks to see if the selector already has the appropriate syntax and
@@ -67,7 +73,7 @@ export default Component.extend({
   allowedElements: computed('allowedSelectors', function() {
     return this.get('allowedSelectors').map(selector => {
       return getDomElement(selector);
-    })
+    });
   }),
 
   /**
@@ -78,8 +84,12 @@ export default Component.extend({
     @public
   */
 
-  parentElement: computed('selector', function() {
-    return getDomElement(this.get('selector'));
+  parentElement: computed('parentSelector', function() {
+    let parentSelector = this.get('parentSelector');
+    if (isBlank(parentSelector)) {
+      Logger.error(noParentErrorMssage);
+    }
+    return getDomElement(parentSelector);
   }),
 
   /**
