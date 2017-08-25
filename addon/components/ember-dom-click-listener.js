@@ -9,26 +9,7 @@ import { guidFor } from 'ember-metal/utils';
 const { Logger } = Ember;
 
 const noParentErrorMssage = 'A `parentSelector` is required to check if a click occurred outside the parent. ' +
-                            'Examples: `.my-selector` or `my-selector`';
-
-/**
-  Checks to see if the selector already has the appropriate syntax and
-  returns the proper element (if it exists).
-*/
-
-const getDomElement = function(selector) {
-  let idSelector, classSelector;
-
-  if (isBlank(selector)) { return; }
-
-  if (selector.indexOf('#') === 0 || selector.indexOf('.') === 0) {
-    return Ember$(`${selector}`);
-  } else {
-    idSelector = Ember$(`#${selector}`);
-    classSelector = Ember$(`.${selector}`);
-  }
-  return !isEmpty(idSelector) ? idSelector : classSelector;
-};
+                            'Examples: `.my-selector` or `#my-selector`';
 
 /**
   A simple component that detects and handles clicks outside of target element(s).
@@ -72,7 +53,7 @@ export default Component.extend({
 
   allowedElements: computed('allowedSelectors', function() {
     return this.get('allowedSelectors').map(selector => {
-      return getDomElement(selector);
+      return Ember$(selector);
     });
   }),
 
@@ -89,7 +70,7 @@ export default Component.extend({
     if (isBlank(parentSelector)) {
       Logger.error(noParentErrorMssage);
     }
-    return getDomElement(parentSelector);
+    return Ember$(parentSelector);
   }),
 
   /**
