@@ -33,7 +33,7 @@ Otherwise you can pass in a string as the `parentSelector`:
 {{#if menuToggled}}
   {{ember-dom-click-listener
     fireAction=(action 'closeMenu')
-    parentSelector='my-selector'
+    parentSelector='.my-selector'
   }}
 {{/if}}
 ```
@@ -47,7 +47,7 @@ You can also pass in an array of selector strings `allowedSelectors` if you need
   {{ember-dom-click-listener
     fireAction=(action 'closeMenu')
     allowedSelectors=myListOfSelectors
-    parentSelector='my-selector'
+    parentSelector='.my-selector'
   }}
 {{/if}}
 
@@ -56,7 +56,7 @@ You can also pass in an array of selector strings `allowedSelectors` if you need
 export default Component.extend({
 
   myListOfSelectors: computed(function() {
-    return ['another-selector', 'yet-another-selector'];
+    return ['.another-selector', '.yet-another-selector'];
   })
 
 });
