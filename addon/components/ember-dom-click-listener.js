@@ -44,20 +44,6 @@ export default Component.extend({
   allowedSelectors: computed(() => []),
 
   /**
-    Holds the list of allowed elements in which are acceptable to click inside.
-
-    @property allowedElements
-    @type {Array}
-    @private
-  */
-
-  allowedElements: computed('allowedSelectors', function() {
-    return this.get('allowedSelectors').map(selector => {
-      return Ember$(selector);
-    });
-  }),
-
-  /**
     The parent element that provides the context in which is acceptable to click inside.
 
     @property parentElement
@@ -114,15 +100,15 @@ export default Component.extend({
   */
 
   clickHandler(event) {
-    let allowedElements = this.get('allowedElements');
+    let allowedSelectors = this.get('allowedSelectors');
     let parentElement = this.get('parentElement');
     let $target = Ember$(event.target);
     let clickedOnAllowable;
 
     let clickedOutside = isEmpty($target.closest(parentElement));
 
-    if (isPresent(allowedElements)) {
-      clickedOnAllowable = allowedElements.filter(selector => isPresent($target.closest(selector)));
+    if (isPresent(allowedSelectors)) {
+      clickedOnAllowable = allowedSelectors.filter(selector => isPresent($target.closest(selector)));
     }
 
     if (clickedOutside && isEmpty(clickedOnAllowable)) {
