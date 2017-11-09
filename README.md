@@ -12,7 +12,7 @@ The primary use case is to trigger a click action that fires when a click occurs
 
 You can use the listener wherever you are triggering a display of anything (menu, modal, etc.) and need the ability to close it via clicking outside of the specified element.
 
-If the entire parent component is the allowable click area, you can pass in the `elementId` as the `parentSelector`:
+If you are using **[Ember Composable Helpers](https://github.com/DockYard/ember-composable-helpers)** and the entire parent component is the allowable click area, you can pass in the a concatenated string of the ID selector `#` and `elementId` as the `parentSelector`:
 
 ```
 // template.hbs
@@ -20,7 +20,7 @@ If the entire parent component is the allowable click area, you can pass in the 
 {{#if menuToggled}}
   {{ember-dom-click-listener
     fireAction=(action 'closeMenu')
-    parentSelector=elementId
+    parentSelector=(concat '#' elementId)
   }}
 {{/if}}
 ```
@@ -60,6 +60,20 @@ export default Component.extend({
   })
 
 });
+```
+
+Again, if you're using **[Ember Composable Helpers](https://github.com/DockYard/ember-composable-helpers)** you can concatenate your own array via the `array` helper:
+
+```
+// template.hbs
+
+{{#if menuToggled}}
+  {{ember-dom-click-listener
+    fireAction=(action 'closeMenu')
+    allowedSelectors=(array '#selector-1' '.selector-2' '.selector-3')
+    parentSelector='.my-selector'
+  }}
+{{/if}}
 ```
 
 As for the action, it can be defined in the parent component or passed in as a closure:
