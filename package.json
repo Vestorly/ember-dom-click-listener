@@ -1,6 +1,6 @@
 {
   "name": "ember-dom-click-listener",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A simple click listener for Ember applications",
   "keywords": [
     "ember-addon"
@@ -11,7 +11,7 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": "https://github.com/Vestorly/ember-dom-click-listener",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
