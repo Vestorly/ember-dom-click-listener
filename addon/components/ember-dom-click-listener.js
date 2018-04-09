@@ -7,7 +7,7 @@ import { isBlank, isEmpty, isPresent } from '@ember/utils';
 import { guidFor } from '@ember/object/internals';
 import { isArray } from '@ember/array';
 
-const { Logger } = Ember;
+const { Logger: { error } } = Ember;
 
 const noParentErrorMssage = 'A `parentSelector` is required to check if a click occurred outside the parent. ' +
                             'Examples: `.my-selector` or `#my-selector`';
@@ -57,7 +57,7 @@ export default Component.extend({
   parentElement: computed('parentSelector', function() {
     let parentSelector = get(this, 'parentSelector');
     if (isBlank(parentSelector)) {
-      Logger.error(noParentErrorMssage);
+      error(noParentErrorMssage);
     }
     return jquery(parentSelector);
   }),
@@ -84,7 +84,7 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     if (!isArray(get(this, 'allowedSelectors'))) {
-      Logger.error(allowedSelectorsErrorMessage);
+      error(allowedSelectorsErrorMessage);
     }
     run.next(()=> this._setDomClickEvent());
   },
@@ -125,7 +125,7 @@ export default Component.extend({
       if (typeof fireAction === 'function') {
         fireAction();
       } else {
-        Logger.error('Must pass "fireAction" as a closure action.');
+        error('Must pass "fireAction" as a closure action.');
       }
     }
   },
