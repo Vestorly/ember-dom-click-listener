@@ -1,15 +1,18 @@
 import Ember from 'ember';
-import Ember$ from 'jquery';
-import Component from 'ember-component';
-import computed from 'ember-computed';
-import run from 'ember-runloop';
-import { isBlank, isEmpty, isPresent } from 'ember-utils';
-import { guidFor } from 'ember-metal/utils';
+import jquery from 'jquery';
+import Component from '@ember/component';
+import { computed, get } from '@ember/object';
+import { run } from '@ember/runloop';
+import { isBlank, isEmpty, isPresent } from '@ember/utils';
+import { guidFor } from '@ember/object/internals';
+import { isArray } from '@ember/array';
 
 const { Logger } = Ember;
 
 const noParentErrorMssage = 'A `parentSelector` is required to check if a click occurred outside the parent. ' +
                             'Examples: `.my-selector` or `#my-selector`';
+
+const allowedSelectorsErrorMessage = '`allowedSelectors` must be an array of selectors.';
 
 /**
   A simple component that detects and handles clicks outside of target element(s).
@@ -52,11 +55,11 @@ export default Component.extend({
   */
 
   parentElement: computed('parentSelector', function() {
-    let parentSelector = this.get('parentSelector');
+    let parentSelector = get(this, 'parentSelector');
     if (isBlank(parentSelector)) {
       Logger.error(noParentErrorMssage);
     }
-    return Ember$(parentSelector);
+    return jquery(parentSelector);
   }),
 
   /**
@@ -80,6 +83,9 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
+    if (!isArray(get(this, 'allowedSelectors'))) {
+      Logger.error(allowedSelectorsErrorMessage);
+    }
     run.next(()=> this._setDomClickEvent());
   },
 
@@ -100,9 +106,9 @@ export default Component.extend({
   */
 
   clickHandler(event) {
-    let allowedSelectors = this.get('allowedSelectors');
-    let parentElement = this.get('parentElement');
-    let $target = Ember$(event.target);
+    let allowedSelectors = get(this, 'allowedSelectors');
+    let parentElement = get(this, 'parentElement');
+    let $target = jquery(event.target);
     let clickedOnAllowable;
 
     let clickedOutside = isEmpty($target.closest(parentElement));
@@ -113,7 +119,14 @@ export default Component.extend({
 
     if (clickedOutside && isEmpty(clickedOnAllowable)) {
       event.preventDefault();
-      this.sendAction('fireAction');
+
+      const fireAction = get(this, 'fireAction');
+
+      if (typeof fireAction === 'function') {
+        fireAction();
+      } else {
+        Logger.error('Must pass "fireAction" as a closure action.');
+      }
     }
   },
 
@@ -124,7 +137,7 @@ export default Component.extend({
   */
 
   _setDomClickEvent() {
-    return Ember$(window).on(`click.${guidFor(this)}`, event => {
+    return jquery(window).on(`click.${guidFor(this)}`, event => {
       return this.clickHandler(event);
     });
   },
@@ -136,6 +149,6 @@ export default Component.extend({
   */
 
   _removeDomClickEvent() {
-    Ember$(window).off(`click.${guidFor(this)}`);
+    jquery(window).off(`click.${guidFor(this)}`);
   }
 });
